@@ -29,7 +29,7 @@ public class FileFunc {
         fileOutput.flush();
         fileOutput.close();
         //returns in a string the name of the temp file if you need to do anything in it
-        return outFile.getName();
+        return ct.getCacheDir() + "/" + outFile.getName();
 
     }
 
