@@ -18,8 +18,7 @@ public class Processor {
     private ArrayList<FFmpegSession> fFmpegSessions;
     private Context globalCt;
     private TextView logbox;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-    private MediaStore mediastore = new MediaStore();
+
 
 
     public Processor (Context androidContext) {
@@ -60,7 +59,7 @@ public class Processor {
         if(pv.getHeight() > pv.getWidth()) {
             //do whatever if the video is vertical
             String args;
-            args = "-i " + pv.getFilePath() + " -filter_complex \"[v:0]split=2[tmp][og];" +
+            args = "-i " + pv.getReadFilePath(globalCt) + " -filter_complex \"[v:0]split=2[tmp][og];" +
                     "[tmp]crop=h=iw:w=iw,boxblur=luma_radius=40:chroma_radius=20,scale=h="+pv.getHeight()+ ":" +
                     "w="+pv.getHeight()+"[tmp];[tmp][og] overlay=y=(H-h)/2:x=(W-w)/2\" "+ outPath;
             fFmpegSessions.add(FFmpegKit.executeAsync(args, new ExecuteCallback() {
@@ -94,7 +93,7 @@ public class Processor {
     }
 
     private String genOutFilename(ProbedVideo pv) {
-        return "bulk_video_" + pv.getFileName() + "_" + Instant.now().getEpochSecond() + ".mp4";
+        return "bulk_video_" + pv.genFileRand() + "_" + Instant.now().getEpochSecond() + ".mp4";
     }
 
     private Uri allocateFile(ProbedVideo pv) {

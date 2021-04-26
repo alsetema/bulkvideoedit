@@ -1,24 +1,30 @@
 package com.example.bulkvideoeditor;
 
+import android.content.Context;
+import android.net.Uri;
 import android.provider.MediaStore;
+import com.arthenica.ffmpegkit.FFmpegKitConfig;
+
+import java.io.File;
+import java.util.Random;
 
 public class ProbedVideo {
 
-    private String fpath;
+    private Uri uri;
     private int localWidth;
     private int localHeight;
     private EditType eType;
 
 
-    public ProbedVideo(String filePath, int width, int height, EditType editType) {
-        fpath = filePath;
+    public ProbedVideo(Uri fileUri, int width, int height, EditType editType) {
+        uri = fileUri;
         setHeight(height);
         setWidth(width);
         eType = editType;
     }
 
-    public String getFilePath() {
-        return fpath;
+    public String getReadFilePath(Context ct) {
+        return FFmpegKitConfig.getSafParameterForRead(ct, this.uri);
     }
 
     private void setWidth(int width) {
@@ -53,10 +59,11 @@ public class ProbedVideo {
         return eType;
     }
 
-    //returns the filename without extension
-    public String getFileName() {
-        String[] subdirs = fpath.split("/");
-        return subdirs[subdirs.length-1].split("\\.")[0]; //split on literal dot for only filename
+    //will return a random value for good measure
+    public String genFileRand() {
+        Random rd = new Random();
+        int bound = 100000;
+        return String.format("%06", rd.nextInt(bound));
     }
 
 }

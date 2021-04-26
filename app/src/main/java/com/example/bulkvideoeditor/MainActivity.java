@@ -15,11 +15,7 @@ import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.arthenica.ffmpegkit.ExecuteCallback;
-import com.arthenica.ffmpegkit.FFprobeKit;
-import com.arthenica.ffmpegkit.FFprobeSession;
-import com.arthenica.ffmpegkit.Session;
-
+import com.arthenica.ffmpegkit.*;
 
 
 import java.io.*;
@@ -148,35 +144,26 @@ public class MainActivity extends AppCompatActivity {
         //to make my own copy of the file thta I control, and put that one into ffmpeg (i know
         //the location of that one)
         //hardcoded thing shit uri value for test
-        try {
-            String tempFilepath = FileFunc.uriToFile(videoURI, getCacheDir().toString(), this);
-            Log.i("file path thing", tempFilepath);
+
+            String filePath = FFmpegKitConfig.getSafParameterForRead(MainActivity.this, videoURI);
             //System.out.println("file path thing "+ filepath);
             //select streams opt will select video 0 (the first video stream found in the mp4), show entries will show what was found, and the oput format csv=p=0 removes "print section" in theoutput
 
-            String probeResult = FFprobeKit.execute("-i " + tempFilepath + " -print_format csv=p=0 -select_streams v:0 -show_entries stream=width,height").getOutput();
+            String probeResult = FFprobeKit.execute("-i " + filePath + " -print_format csv=p=0 -select_streams v:0 -show_entries stream=width,height").getOutput();
 
             String[] split = probeResult.split("\n");
             String finalLine = split[split.length-1];
             int width = Integer.parseInt(finalLine.split(",")[0]);
             int height = Integer.parseInt(finalLine.split(",")[1]);
 
-            probedVideoQueue.add(new ProbedVideo(tempFilepath, width, height, EditType.SQUARE));
+            probedVideoQueue.add(new ProbedVideo(videoURI, width, height, EditType.SQUARE));
             clipInfoView.setText("" + probedVideoQueue.size());
 
 
            // vw1.setVideoURI(Uri.fromFile(new File(tempFilepath)));
            // vw1.start();
             //dont print stuff, use logcat
-        } catch (FileNotFoundException e) {
-            Log.e("EXCEPTION", "what the fuck this failed :)))) (file not found)");
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e("EXCEPTION", "this is a IO exception thrown at trying to uritofile");
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.e("EXCEPTION,RANDOM", "you're fucked, random exception");
-        }
+
 
 
     }
