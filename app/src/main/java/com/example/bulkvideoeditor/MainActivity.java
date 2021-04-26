@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Intent;
 
 import android.net.Uri;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button filePickMultiButton;
     final int CODE_PICKED_VIDEO = 2;
     private ArrayList<ProbedVideo> probedVideoQueue = new ArrayList<>();
+    Processor videoProcessor = new Processor(MainActivity.this);
 
 
     private Toast errorToast;
@@ -87,12 +89,19 @@ public class MainActivity extends AppCompatActivity {
             infoToast.setText("The processing queue is empty, nothing to do :)\n PD: add some files to process");
             infoToast.show();
         }
-        while (probedVideoQueue.size() > 0) {
-            //this shrould remove it from the queue and do something with it
-            Log.i("video info", probedVideoQueue.remove(0).getFilePath());
+        else {
+            clipInfoView.setMovementMethod(new ScrollingMovementMethod());
+            for(ProbedVideo pv: probedVideoQueue) {
+
+                videoProcessor.process(pv,clipInfoView);
+                probedVideoQueue.remove(pv);
+            }
         }
-        clipInfoView.setText("Done");
+            //this shrould remove it from the queue and do something with it
+
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
