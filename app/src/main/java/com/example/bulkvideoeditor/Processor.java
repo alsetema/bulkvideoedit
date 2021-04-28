@@ -86,6 +86,8 @@ public class Processor {
             ));
 
         } else if (pv.getHeight() < pv.getWidth()) {
+            String args;
+            args = "-i" + pv.getReadFilePath(globalCt) + " -filter_complex \""
             // do whatver if the video is horizontal
         } else {
             //do nothing if the video is already 1:1
