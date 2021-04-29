@@ -86,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
             infoToast.show();
         }
         else {
+            //make copy of the array so that i can iterate without modifying the array im iterating in.
+            ArrayList<ProbedVideo> iteratableArray = (ArrayList<ProbedVideo>) probedVideoQueue.clone();
             clipInfoView.setMovementMethod(new ScrollingMovementMethod());
-            for(ProbedVideo pv: probedVideoQueue) {
-
+            for(ProbedVideo pv: iteratableArray) {
                 videoProcessor.process(pv,clipInfoView);
                 probedVideoQueue.remove(pv);
             }

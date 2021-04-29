@@ -63,7 +63,7 @@ public class ProbedVideo {
     public String genFileRand() {
         Random rd = new Random();
         int bound = 100000;
-        return String.format("%06", rd.nextInt(bound));
+        return String.format("%06d", rd.nextInt(bound));
     }
 
 }

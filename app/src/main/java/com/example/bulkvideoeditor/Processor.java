@@ -44,6 +44,7 @@ public class Processor {
         int cleanedProcs = 0;
         for (FFmpegSession session: fFmpegSessions) {
             if(session.getReturnCode().isSuccess()) {
+                //this wont work if im removing an object inside an iterator, just so I know
                 fFmpegSessions.remove(session);
                 cleanedProcs++;
             }
@@ -85,9 +86,11 @@ public class Processor {
                     }
             ));
 
-        } else if (pv.getHeight() < pv.getWidth()) {
+        } else if (pv.getWidth() > pv.getHeight()) {
             String args;
-            args = "-i" + pv.getReadFilePath(globalCt) + " -filter_complex \""
+            args = "-i" + pv.getReadFilePath(globalCt) + " -filter_complex \"[v:0]split=2[tmp][og];" +
+                    "[tmp]crop=h=ih:w=ih,boxblur=luma_radius=40:chroma_radius=20,scale=h="+pv.getWidth()+ ":" +
+                    "w="+pv.getWidth()+"[tmp];[tmp][og] overlay=y=(H-h)/2:x=(W-w)/2\" " + outPath;
             // do whatver if the video is horizontal
         } else {
             //do nothing if the video is already 1:1
